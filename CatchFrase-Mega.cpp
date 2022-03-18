@@ -2,7 +2,7 @@
   This program was made for LCD modules with 8bit data port.
   This program requires the the LCDKIWI library.
 
-  File                : CatchFrase.ino
+  File                : GuessFrase.ino
   Hardware Environment: Arduino MEGA
   Build Environment   : Arduino
 
@@ -110,7 +110,7 @@ void printDirectory(File dir, int numTabs) {
   }
 }
 
-boolean is_pressed(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t px, int16_t py) {  //Check whether to press or not
+boolean is_pressed(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t px, int16_t py) {  //Check whether pressed or not
   if ((px > x1 && px < x2) && (py > y1 && py < y2)) {
     return true;
   } else { return false; }
@@ -194,7 +194,7 @@ void drawHomePage() {
   myLcd.Set_Text_Back_colour(BLACK);
   myLcd.Set_Text_colour(WHITE);
   myLcd.Set_Text_Size(6);
-  myLcd.Print_String("CATCH FRASE", CENTER, 3);
+  myLcd.Print_String("GUESS FRASE", CENTER, 3);
   myLcd.Set_Draw_color(RED);
   myLcd.Fill_Round_Rectangle(x_center - 150, 90, x_center + 150, 150, 5);  //Categories box x1, y1, x2, y2
   myLcd.Fill_Round_Rectangle(x_center - 150, 200, x_center + 150, 260, 5); //Settings box
@@ -214,7 +214,7 @@ void drawAboutPage(){
   myLcd.Set_Text_Back_colour(BLACK);
   myLcd.Set_Text_colour(WHITE);
   myLcd.Set_Text_Size(6);
-  myLcd.Print_String("CATCH FRASE", CENTER, 3);
+  myLcd.Print_String("GUESS FRASE", CENTER, 3);
   myLcd.Set_Text_Size(4);
   myLcd.Print_String("Created by:", CENTER, 70);
   myLcd.Set_Text_colour(RED);
