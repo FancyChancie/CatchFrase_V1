@@ -88,7 +88,13 @@ unsigned long gameTime;
 unsigned long gameTimeRemaining;
 boolean gameInPlay = false;
 
-void printDirectory(File dir, int numTabs) {
+/**
+ * Function printDirectory prints file data to serial monitor.
+ * @param file [File] File of interest
+ * @param numTabs [int] How many tabs to print
+ */
+void printDirectory(File dir, int numTabs)
+{
   while (true) {
     File entry = dir.openNextFile();
     if (!entry) { // no more files
@@ -109,14 +115,27 @@ void printDirectory(File dir, int numTabs) {
     entry.close();
   }
 }
-
-boolean is_pressed(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t px, int16_t py) {  //Check whether pressed or not
+/**
+ * Function is_pressed checks to see if the TFT screen has been pressed or not
+ * @param x1 [int16_t] x1 screen coordinate
+ * @param y1 [int16_t] y1 screen coordinate
+ * @param x2 [int16_t] x2 screen coordinate
+ * @param y2 [int16_t] y2 screen coordinate
+ * @param px [int16_t] px pressure at x
+ * @param py [int16_t] py pressure at y
+ */
+boolean is_pressed(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t px, int16_t py)
+{
   if ((px > x1 && px < x2) && (py > y1 && py < y2)) {
     return true;
   } else { return false; }
 }
 
-boolean getPassButtonState(){
+/**
+ * Function getPassButtonState checks to see if the physical button has been pressed
+ */
+boolean getPassButtonState()
+{
   passButtonState = digitalRead(passButtonPin);
   if (passButtonState == HIGH){
     //Serial.print("passButtonState: "); Serial.println(passButtonState);
@@ -126,7 +145,12 @@ boolean getPassButtonState(){
     return false; }
 }
 
-int getNumberOfLines() {    // Check file to see how many entries, this will be used for random number limits
+/**
+ * Function getNumberOfLines checks open file to see how many entries are present.
+ * This will be used for random number limits
+ */
+int getNumberOfLines()
+{
   int numLines = 0;
   phraseFile.seek(0);
   char cr;
@@ -140,7 +164,12 @@ int getNumberOfLines() {    // Check file to see how many entries, this will be 
   return numLines;
 }
 
-void openPhraseFile(String fileName){ 
+/**
+ * Function openPhrasaeFile opens file on SD card
+ * @param fileName [string] file in which to open
+ */
+void openPhraseFile(String fileName)
+{ 
   fileName += ".txt";
   char fileNameChar [fileName.length()];
   fileName.toCharArray(fileNameChar,fileName.length());
@@ -158,7 +187,12 @@ void openPhraseFile(String fileName){
   }
 }
 
-String getPhrase(unsigned int lineNumber){
+/**
+ * Function openPhrasaeFile opens file on SD card
+ * @param lineNumber [unsigned int] the line from random seed to populate screen with
+ */
+String getPhrase(unsigned int lineNumber)
+{
   String phrase;
   phraseFile.seek(0);
   char cr;
@@ -181,7 +215,11 @@ String getPhrase(unsigned int lineNumber){
   return phrase;
 }
 
-void drawInitializationPage(String initializationStatus){
+/**
+ * Function drawInitializationPage draws predefined page to indicate start up
+ */
+void drawInitializationPage(String initializationStatus)
+{
   myLcd.Fill_Screen(BLACK);
   myLcd.Set_Text_Back_colour(BLACK);
   myLcd.Set_Text_colour(WHITE);
@@ -189,7 +227,11 @@ void drawInitializationPage(String initializationStatus){
   myLcd.Print_String(initializationStatus, CENTER, 150);
 }
 
-void drawHomePage() {
+/**
+ * Function drawHomePage draws predefined home page
+ */
+void drawHomePage()
+{
   myLcd.Fill_Screen(BLACK);
   myLcd.Set_Text_Back_colour(BLACK);
   myLcd.Set_Text_colour(WHITE);
@@ -208,7 +250,11 @@ void drawHomePage() {
   myLcd.Print_String("About", CENTER, 215);
 }
 
-void drawAboutPage(){
+/**
+ * Function drawAboutPage draws predefined creditation page
+ */
+void drawAboutPage()
+{
   Serial.print("Current page: "); Serial.println(currentPage);
   myLcd.Fill_Screen(BLACK);
   myLcd.Set_Text_Back_colour(BLACK);
@@ -218,7 +264,7 @@ void drawAboutPage(){
   myLcd.Set_Text_Size(4);
   myLcd.Print_String("Created by:", CENTER, 70);
   myLcd.Set_Text_colour(RED);
-  myLcd.Print_String("Chance Reeves", CENTER, 110);
+  myLcd.Print_String("CR & AW", CENTER, 110);
   myLcd.Set_Text_colour(WHITE);
   myLcd.Set_Text_Size(2);
   myLcd.Print_String(" Programmed using Visual Code Studio", LEFT, 155);
@@ -236,7 +282,11 @@ void drawAboutPage(){
 
 }
 
-void drawCategoriesPage() {
+/**
+ * Function drawCategoriesPage draws predefined category selection page
+ */
+void drawCategoriesPage()
+{
   Serial.print("Current page: "); Serial.println(currentPage);
   myLcd.Fill_Screen(BLACK);
   myLcd.Set_Text_Back_colour(BLACK);
@@ -281,7 +331,13 @@ void drawCategoriesPage() {
   myLcd.Print_String("Back",         x_center / 2 + 85,  280);
 }
 
-void drawStartPage(String category) {
+/**
+ * Function drawStartPage draws predefined page indicating category selection,
+ * ready for player to start game
+ * @param category [string] selected category
+ */
+void drawStartPage(String category)
+{
   Serial.print("Current page: "); Serial.println(currentPage);
   myLcd.Fill_Screen(BLACK);
   myLcd.Set_Text_Back_colour(BLACK);
@@ -306,7 +362,11 @@ void drawStartPage(String category) {
   myLcd.Print_String("Back",  CENTER, 280);
 }
 
-void drawPhrasePage() {
+/**
+ * Function drawPhrasePage draws predefined page during gameplay
+ */
+void drawPhrasePage()
+{
   Serial.print("Current page: "); Serial.println(currentPage);
   myLcd.Fill_Screen(BLACK);
   myLcd.Set_Text_Back_colour(BLACK);
@@ -326,7 +386,12 @@ void drawPhrasePage() {
   myLcd.Print_String("End Game", CENTER, 280);
 }
 
-void drawPhrase(String phrase) {
+/**
+ * Function drawPhrase draws the phrase to be described
+ * @param phrase [String] Randomly selected phrase to be described
+ */
+void drawPhrase(String phrase)
+{
   myLcd.Set_Text_colour(YELLOW);
   myLcd.Set_Text_Back_colour(BLACK);
   myLcd.Set_Text_Size(6);
@@ -349,7 +414,11 @@ void drawPhrase(String phrase) {
     Serial.println(phrase);
 }
 
-void drawGameOverPage(){
+/**
+ * Function drawGameOverPage draws the predefined game over page once timer has ran out
+ */
+void drawGameOverPage()
+{
   Serial.print("Current page: "); Serial.println(currentPage);
   myLcd.Fill_Screen(BLACK);
   myLcd.Set_Text_Back_colour(BLACK);
@@ -375,7 +444,11 @@ void drawGameOverPage(){
   myLcd.Print_String("Home",       x_center / 2 + 260, 273);
 }
 
-void setup() {
+/**
+ * Function setup initalizes Arduino for operation
+ */
+void setup()
+{
  initialize:
   Serial.begin(9600);
   myLcd.Init_LCD(); //initialize lcd
@@ -415,7 +488,11 @@ void setup() {
   currentPage = '0'; // Indicates that we are at Home Screen
 }
 
-void loop() {
+/**
+ * Function loop is the main loop of the program
+ */
+void loop()
+{
  base:
   digitalWrite(13, HIGH);
   TSPoint p = ts.getPoint();  // A point object holds x y and z coordinates
