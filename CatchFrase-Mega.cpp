@@ -38,6 +38,7 @@ LCDWIKI_KBV myLcd(ILI9486, A3, A2, A1, A0, A4); //model,cs,cd,wr,rd,reset
 
 #define TOUCH_ORIENTATION  1  //0=Portrait, 1=Landscape
 
+//// COLOR DEFINITION STUFF ////
 #define BLACK   0x0000
 #define BLUE    0x001F
 #define RED     0xF800
@@ -47,6 +48,7 @@ LCDWIKI_KBV myLcd(ILI9486, A3, A2, A1, A0, A4); //model,cs,cd,wr,rd,reset
 #define YELLOW  0xFFE0
 #define WHITE   0xFFFF
 
+//// SCREEN SETUP STUFF ////
 #define YP A3  // must be an analog pin, use "An" notation!
 #define XM A2  // must be an analog pin, use "An" notation!
 #define YM 9   // can be a digital pin
@@ -68,16 +70,20 @@ const int maxPhraseLineLength_SIZE2 = 40;
 char currentPage;
 String currentCategory;
 File phraseFile;
+
+//// BUTTON STUFF ////
 const int passButtonPin = 45;
 int passButtonState = 0;
 
+//// TONE STUFF ////
 const int tonePin = 47;
 unsigned long toneDuration;
 unsigned int  toneFrequency;
-const unsigned int hapticFeedbackToneDuration = 50;
+const unsigned int hapticFeedbackToneDuration = 45;
 const unsigned int hapticFeedbackToneFrequency = 200;
-boolean outputTone = false;                // Records current state
+volatile bool outputTone = false;                // Records current state
 
+//// TIMER STUFF ////
 unsigned long previousMillis1, previousMillis2;            // will store last time timer was updated
 unsigned long interval1 = 1000;          //
 unsigned long minGameTime = 90;          // minimum time for game play (seconds)
@@ -86,7 +92,17 @@ unsigned long timeRemaining;
 
 unsigned long gameTime;
 unsigned long gameTimeRemaining;
-boolean gameInPlay = false;
+volatile bool gameInPlay = false;
+
+//// SHAKE SENSOR STUFF ////
+const int shakePin = 42;
+bool lastShakeState = false;
+int shakeCounter = 0;
+unsigned long shakeTime = 600;
+unsigned long lastShakeTime;
+
+//// Vibration motor stuff ////
+const int motorPin = 42;
 
 /**
  * Function printDirectory prints file data to serial monitor.
@@ -143,6 +159,35 @@ boolean getPassButtonState()
   } else {
     //Serial.print("passButtonState: "); Serial.println(passButtonState);
     return false; }
+}
+
+/**
+ * Function getShakeState checks to see user has shaked device to change word
+ */
+boolean getShakeState()
+{
+  // Sense shake & increment counter
+  if(lastShakeState != digitalRead(shakePin)){
+    shakeCounter++;
+    lastShakeState = !lastShakeState;
+    // Serial.print("+1 shake\n");
+    delay(25);
+  }
+  // Alert that it has been shaken hard enough
+  if(shakeCounter == 4){
+    // Serial.print("Shaked!\n");
+    shakeCounter = 0;
+    return true;
+  }
+  // Reset counter for shake timing
+  if(millis() - lastShakeTime > shakeTime){
+    //Serial.print("Shake timer up\n");
+    shakeCounter = 0;
+    lastShakeTime = millis();
+  }
+  lastShakeState = digitalRead(shakePin);
+
+  return false;
 }
 
 /**
@@ -477,6 +522,11 @@ void setup()
   pinMode(A0, OUTPUT);
   pinMode(13, OUTPUT);
   pinMode(passButtonPin, INPUT);  //Physical pass button
+  pinMode(shakePin,INPUT);  //Shake sensor
+  lastShakeState = digitalRead(shakePin); //get current state of shakePin
+  lastShakeTime = millis();
+  pinMode(motorPin,OUTPUT);
+  digitalWrite(motorPin,LOW); // make sure vibration motor is off
   randomSeed(analogRead(A5));
   dispx = myLcd.Get_Display_Width();
   dispy = myLcd.Get_Display_Height();
@@ -500,7 +550,7 @@ void loop()
   pinMode(XM, OUTPUT);
   pinMode(YP, OUTPUT);
 
-  if (getPassButtonState() && currentPage == '3') {
+  if ( (getPassButtonState() || getShakeState() ) && currentPage == '3') { // Check if physical button pressed or shake sensed
     tone(tonePin, hapticFeedbackToneFrequency, hapticFeedbackToneDuration);
     drawPhrase(getPhrase(random(1,numLines)));
     Serial.println("Button pressed");
@@ -525,7 +575,7 @@ void loop()
         tone(tonePin, hapticFeedbackToneFrequency, hapticFeedbackToneDuration);
         currentPage = '5';
         drawAboutPage();
-        delay(10000);
+        delay(6000);  // Show for 6 seconds
         drawHomePage();
         currentPage = '0';
       }
@@ -701,12 +751,14 @@ void loop()
         if (currentMillis - previousMillis2 >= toneDuration){
           previousMillis2 = currentMillis;
           noTone(tonePin);
+          digitalWrite(motorPin,LOW);
           outputTone = false;
         }
       }else{            //Currently in a pause. Check if it's been long enough and turn on, if so...
-        if (currentMillis - previousMillis2 >= interval2){
+        if (currentMillis - previousMillis2 >= interval2) {
           previousMillis2 = currentMillis;
           tone(tonePin, toneFrequency);
+          digitalWrite(motorPin,HIGH);
           outputTone = true;
         }
       }
@@ -717,9 +769,12 @@ void loop()
       toneFrequency = 900;
       toneDuration = 2000;
       tone(tonePin, toneFrequency, toneDuration);
+      digitalWrite(motorPin,HIGH);
       gameInPlay = false;
       currentPage = '4';
       drawGameOverPage();
+      delay(toneDuration);
+      digitalWrite(motorPin,LOW);
       }
   }
 }
