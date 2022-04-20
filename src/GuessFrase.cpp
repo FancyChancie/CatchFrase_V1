@@ -2,7 +2,7 @@
   This program was made for LCD modules with 8bit data port.
   This program requires the the LCDKIWI library.
 
-  File                : GuessFrase.ino
+  File                : GUESSFrase.ino
   Hardware Environment: Arduino MEGA
   Build Environment   : Arduino
 
@@ -337,7 +337,7 @@ void drawCategoriesPage()
   myLcd.Set_Text_Back_colour(BLACK);
   myLcd.Set_Text_colour(WHITE);
   myLcd.Set_Text_Size(6);
-  myLcd.Print_String("CATCH FRASE", CENTER, 3);
+  myLcd.Print_String("GUESS FRASE", CENTER, 3);
   myLcd.Set_Draw_color(RED);
   myLcd.Fill_Round_Rectangle(x_center / 2 - 115, 60,  x_center / 2 + 35,  120, 5); //Everything box
   myLcd.Fill_Round_Rectangle(x_center - 75,      60,  x_center + 75,      120, 5); //Math/Science box
@@ -388,7 +388,7 @@ void drawStartPage(String category)
   myLcd.Set_Text_Back_colour(BLACK);
   myLcd.Set_Text_colour(WHITE);
   myLcd.Set_Text_Size(6);
-  myLcd.Print_String("CATCH FRASE", CENTER, 3);
+  myLcd.Print_String("GUESS FRASE", CENTER, 3);
   myLcd.Set_Draw_color(RED);
   myLcd.Fill_Round_Rectangle(x_center - 165,    180, x_center + 150,     250, 5);  //Start box
   myLcd.Fill_Round_Rectangle(x_center / 2 + 35, 270, x_center / 2 + 205, 310, 5); //Back box
@@ -417,7 +417,7 @@ void drawPhrasePage()
   myLcd.Set_Text_Back_colour(BLACK);
   myLcd.Set_Text_colour(WHITE);
   myLcd.Set_Text_Size(6);
-  myLcd.Print_String("CATCH FRASE", CENTER, 3);
+  myLcd.Print_String("GUESS FRASE", CENTER, 3);
   myLcd.Set_Draw_color(RED);
   myLcd.Fill_Round_Rectangle(x_center - 165,    180, x_center + 150,     250, 5);  //Next box
   myLcd.Fill_Round_Rectangle(x_center / 2 + 35, 270, x_center / 2 + 205, 310, 5); //Back box
@@ -469,7 +469,7 @@ void drawGameOverPage()
   myLcd.Set_Text_Back_colour(BLACK);
   myLcd.Set_Text_colour(WHITE);
   myLcd.Set_Text_Size(6);
-  myLcd.Print_String("CATCH FRASE", CENTER, 3);
+  myLcd.Print_String("GUESS FRASE", CENTER, 3);
   myLcd.Set_Text_colour(RED);
   myLcd.Set_Text_Size(8);
   myLcd.Print_String("GAME OVER", CENTER, 110);
