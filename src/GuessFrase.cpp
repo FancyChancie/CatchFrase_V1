@@ -98,11 +98,12 @@ volatile bool gameInPlay = false;
 const int shakePin = 42;
 bool lastShakeState = false;
 int shakeCounter = 0;
+int minShakeCount = 5;
 unsigned long shakeTime = 600;
 unsigned long lastShakeTime;
 
 //// Vibration motor stuff ////
-const int motorPin = 42;
+const int motorPin = 43;
 
 /**
  * Function printDirectory prints file data to serial monitor.
@@ -174,7 +175,7 @@ boolean getShakeState()
     delay(25);
   }
   // Alert that it has been shaken hard enough
-  if(shakeCounter == 4){
+  if(shakeCounter == minShakeCount){
     // Serial.print("Shaked!\n");
     shakeCounter = 0;
     return true;
@@ -552,6 +553,7 @@ void loop()
 
   if ( (getPassButtonState() || getShakeState() ) && currentPage == '3') { // Check if physical button pressed or shake sensed
     tone(tonePin, hapticFeedbackToneFrequency, hapticFeedbackToneDuration);
+    digitalWrite(shakePin,LOW);
     drawPhrase(getPhrase(random(1,numLines)));
     Serial.println("Button pressed");
     goto base;
@@ -758,7 +760,9 @@ void loop()
         if (currentMillis - previousMillis2 >= interval2) {
           previousMillis2 = currentMillis;
           tone(tonePin, toneFrequency);
-          digitalWrite(motorPin,HIGH);
+          if(interval2 < 1000){ // Only vibrate motor if time is getting close to end
+            digitalWrite(motorPin,HIGH);
+          }
           outputTone = true;
         }
       }
