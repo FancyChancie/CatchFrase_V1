@@ -234,7 +234,7 @@ void openPhraseFile(String fileName)
 }
 
 /**
- * Function openPhrasaeFile opens file on SD card
+ * Function getPhrase retreives a phrase from the open file on SD card
  * @param lineNumber [unsigned int] the line from random seed to populate screen with
  */
 String getPhrase(unsigned int lineNumber)
@@ -285,7 +285,7 @@ void drawHomePage()
   myLcd.Print_String("GUESS FRASE", CENTER, 3);
   myLcd.Set_Draw_color(RED);
   myLcd.Fill_Round_Rectangle(x_center - 150, 90, x_center + 150, 150, 5);  //Categories box x1, y1, x2, y2
-  myLcd.Fill_Round_Rectangle(x_center - 150, 200, x_center + 150, 260, 5); //Settings box
+  myLcd.Fill_Round_Rectangle(x_center - 150, 200, x_center + 150, 260, 5); //About box
   myLcd.Set_Draw_color(WHITE);
   myLcd.Fill_Round_Rectangle(x_center - 147, 93, x_center + 147, 147, 5);
   myLcd.Fill_Round_Rectangle(x_center - 147, 203, x_center + 147, 257, 5);
@@ -310,7 +310,7 @@ void drawAboutPage()
   myLcd.Set_Text_Size(4);
   myLcd.Print_String("Created by:", CENTER, 70);
   myLcd.Set_Text_colour(RED);
-  myLcd.Print_String("CR & AW", CENTER, 110);
+  myLcd.Print_String("CR", CENTER, 110);
   myLcd.Set_Text_colour(WHITE);
   myLcd.Set_Text_Size(2);
   myLcd.Print_String(" Programmed using Visual Code Studio", LEFT, 155);
@@ -586,7 +586,7 @@ void loop()
 
     // Categoties Page
     if (currentPage == '1') {
-      if (is_pressed(308, 235, 380, 335, p.x, p.y)) {   //Everything sleected
+      if (is_pressed(308, 235, 380, 335, p.x, p.y)) {   //Everything selected
         tone(tonePin, hapticFeedbackToneFrequency, hapticFeedbackToneDuration);
         currentPage = '2';
         currentCategory = "Everything";
